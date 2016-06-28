@@ -332,7 +332,7 @@ class ActiveRecord::Base
     end
 
     def import_helper( *args )
-      options = { validate: true, timestamps: true, primary_key: primary_key }
+      options = { validate: true, timestamps: true, primary_key: primary_key, skip_columns: []}
       options.merge!( args.pop ) if args.last.is_a? Hash
 
       # Don't modify incoming arguments
@@ -351,6 +351,7 @@ class ActiveRecord::Base
         else
           models = args.first
           column_names = self.column_names.dup
+          column_names -= options[:skip_columns] if options[:skip_columns].is_a?( Array ) && options[:skip_columns].any?
         end
 
         array_of_attributes = models.map do |model|
