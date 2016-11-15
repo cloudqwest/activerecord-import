@@ -354,7 +354,7 @@ class ActiveRecord::Base
           column_names -= options[:skip_columns] if options[:skip_columns].is_a?( Array ) && options[:skip_columns].any?
         end
 
-        if column_names.include?(primary_key) && columns_hash[primary_key].type == :uuid
+        if models.first.id.nil? && column_names.include?(primary_key) && columns_hash[primary_key].type == :uuid
           column_names.delete(primary_key)
         end
 
