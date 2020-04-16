@@ -58,6 +58,37 @@ def should_support_postgresql_import_functionality
       end
     end
   end
+
+  if ENV['AR_VERSION'].to_f >= 4.0
+    describe "with a uuid primary key" do
+      let(:vendor) { Vendor.new(name: "foo") }
+      let(:vendors) { [vendor] }
+
+      it "creates records" do
+        assert_difference "Vendor.count", +1 do
+          Vendor.import vendors
+        end
+      end
+
+      it "assigns an id to the model objects" do
+        Vendor.import vendors
+        assert_not_nil vendor.id
+      end
+    end
+
+    describe "with an assigned uuid primary key" do
+      let(:id) { SecureRandom.uuid }
+      let(:vendor) { Vendor.new(id: id, name: "foo") }
+      let(:vendors) { [vendor] }
+
+      it "creates records with correct id" do
+        assert_difference "Vendor.count", +1 do
+          Vendor.import vendors
+        end
+        assert_equal id, vendor.id
+      end
+    end
+  end
 end
 
 def should_support_postgresql_upsert_functionality
